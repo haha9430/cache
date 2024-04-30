@@ -17,8 +17,14 @@ double CachedRunner::multiply(std::string filename) {
     while (file >> number) {
       result *= number;
     }
+
+    bool isExist = c->get(filename, result);
+    if (isExist) {
+      hit += 1;
+    }else {
+      miss += 1;
+    }
     c->add(filename, result);
-    //std::cout << c->toString() << std::endl;
     return result;
 }
 
@@ -45,8 +51,14 @@ int CachedRunner::palindrome(std::string filename) {
         } 
       }
     }
+
+    bool isExist = c->get(filename, maxIndex);
+    if (isExist) {
+      hit += 1;
+    }else {
+      miss += 1;
+    }
     c->add(filename, maxIndex);
-    //std::cout << c->toString() << std::endl;
     return maxIndex;
 }
 
