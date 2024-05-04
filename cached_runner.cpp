@@ -5,8 +5,10 @@
 
 #define HASH_SIZE 10
 
-CachedRunner::CachedRunner(Cache &cache): hit(0), miss(0), c(&cache) {
-    Hash hash(HASH_SIZE);
+CachedRunner::CachedRunner(Cache &cache): hit(0), miss(0), c(&cache), size(0) {
+  for(int i = 0; i < HASH_SIZE; i++) {
+    table[i] = new HashLL();
+  }
 }
 
 // 파일의 숫자를 전부 곱하여 반환한다
@@ -17,11 +19,27 @@ double CachedRunner::multiply(std::string filename) {
     while (file >> number) {
       result *= number;
     }
-
-    bool isExist = c->get(filename, result);
+    
+    bool isExist = table[hash(filename)]->isExist(filename);
+    //std::cout << map.mapSize() << std::endl;
     if (isExist) {
+      map.remove(filename);
+      map.add(filename);
+      table[hash(filename)]->remove(filename);
+      table[hash(filename)]->add(filename);
       hit += 1;
     }else {
+      if (map.mapSize() == HASH_SIZE) {
+        std::string turnS = map.firstKey();
+        map.remove(turnS);
+        map.add(filename);
+        table[hash(turnS)]->remove(turnS);
+        table[hash(filename)]->add(filename);
+      }else {
+        map.add(filename);
+        table[hash(filename)]->add(filename);
+      }
+      
       miss += 1;
     }
     c->add(filename, result);
@@ -52,10 +70,26 @@ int CachedRunner::palindrome(std::string filename) {
       }
     }
 
-    bool isExist = c->get(filename, maxIndex);
+    bool isExist = table[hash(filename)]->isExist(filename);
+    //std::cout << map.mapSize() << std::endl;
     if (isExist) {
+      map.remove(filename);
+      map.add(filename);
+      table[hash(filename)]->remove(filename);
+      table[hash(filename)]->add(filename);
       hit += 1;
     }else {
+      if (map.mapSize() == HASH_SIZE) {
+        std::string turnS = map.firstKey();
+        map.remove(turnS);
+        map.add(filename);
+        table[hash(turnS)]->remove(turnS);
+        table[hash(filename)]->add(filename);
+      }else {
+        map.add(filename);
+        table[hash(filename)]->add(filename);
+      }
+      
       miss += 1;
     }
     c->add(filename, maxIndex);

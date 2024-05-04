@@ -17,7 +17,7 @@ void Cache::add(std::string key, int value) {
     Inner* pre = inners;
  
     // 캐시에 동일한 원소가 있는가?
-    if (get(key, value) == true) {
+    if (isExist(key, value) == true) {
         // 해당 원소 삭제
         remove(key, value);
         cur = inners;
@@ -85,7 +85,7 @@ void Cache::add(std::string key, double value) {
     Inner* pre = inners;
 
     // 캐시에 동일한 원소가 있는가?
-    if (get(key, value) == true) {
+    if (isExist(key, value) == true) {
         // 해당 원소 삭제
         remove(key, value);
         cur = inners;
@@ -152,7 +152,8 @@ bool Cache::get(std::string key, int &value) {
     Inner* cur = inners;
     bool b = false;
     for (int i = 0; i < size; i++) {
-        if(value == cur->getIntVal()) {
+        if(key == cur->getKey()) {
+            value = cur->getIntVal();
             b = true;
             break;
         }
@@ -167,7 +168,8 @@ bool Cache::get(std::string key, double &value) {
     Inner* cur = inners;
     bool b = false;
     for (int i = 0; i < size; i++) {
-        if(value == cur->getDoubleVal()) {
+        if(key == cur->getKey()) {
+            value = cur->getDoubleVal();
             b = true;
             break;
         }
@@ -211,7 +213,7 @@ std::string Cache::toString() {
 void Cache::remove(std::string key, int value) {
     Inner* cur = inners;
     Inner* pre = inners;
-    bool exist = get(key, value);
+    bool exist = isExist(key, value);
     if (exist == true) {
         while(cur != NULL && (cur->getIntVal() != value && cur->getKey() != key)) {
             if(cur != inners) {
@@ -239,7 +241,7 @@ void Cache::remove(std::string key, int value) {
 void Cache::remove(std::string key, double value) {
     Inner* cur = inners;
     Inner* pre = inners;
-    bool exist = get(key, value);
+    bool exist = isExist(key, value);
     if (exist == true) {
         while(cur != NULL && (cur->getDoubleVal() != value && cur->getKey() != key)) {
             if(cur != inners) {
@@ -268,4 +270,32 @@ std::string Cache::doubleToString(double value) {
   std::ostringstream ss;
   ss << value;
   return ss.str();
+}
+
+// key와 value가 같은 노드가 없으면 false를 반환한다.
+bool Cache::isExist(std::string key, int value) {
+    Inner* cur = inners;
+    bool b = false;
+    for (int i = 0; i < size; i++) {
+        if(key == cur->getKey()) {
+            b = true;
+            break;
+        }
+        cur = cur->getNext();
+    }
+    return b;  
+}
+
+// key와 value가 같은 노드가 없으면 false를 반환한다.
+bool Cache::isExist(std::string key, double value) {
+    Inner* cur = inners;
+    bool b = false;
+    for (int i = 0; i < size; i++) {
+        if(key == cur->getKey()) {
+            b = true;
+            break;
+        }
+        cur = cur->getNext();
+    }
+    return b;
 }

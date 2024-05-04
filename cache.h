@@ -51,6 +51,10 @@ private:
   void remove(std::string key, double value);
   // double 값을 문자열로 변환한다
   std::string doubleToString(double value);
+  // key와 value가 같은 노드가 없으면 false를 반환한다.
+  bool isExist(std::string key, int value);
+  // key와 value가 같은 노드가 없으면 false를 반환한다.
+  bool isExist(std::string key, double value);
 
 public:
   Cache();
